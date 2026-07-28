@@ -19,37 +19,56 @@ let fotoFileEdicao = null;
 // ==========================================
 // UPLOAD DE FOTO CORRIGIDO PARA O SUPABASE
 // ==========================================
+// ==========================================
+// UPLOAD DE FOTO COM CONVERSÃO AUTOMÁTICA
+// ==========================================
 async function uploadFotoParaSupabase(file) {
     if (!file) return null;
 
+    // Função que converte HEIC/PNG/qualquer formato para JPEG leve
+    const converterParaJpeg = (arquivo) => {
+        return new Promise((resolve) => {
+            if (typeof Compressor === 'undefined') {
+                resolve(arquivo); // Fallback caso a biblioteca não carregue
+                return;
+            }
+
+            new Compressor(arquivo, {
+                quality: 0.8,             // Mantém ótima qualidade visual
+                mimeType: 'image/jpeg',   // Converte HEIC/PNG para JPG universal
+                maxWidth: 1200,           // Redimensiona para não pesar no banco
+                maxHeight: 1200,
+                success(resultado) {
+                    resolve(resultado);
+                },
+                error(err) {
+                    console.warn("Erro na conversão, enviando original:", err);
+                    resolve(arquivo);
+                },
+            });
+        });
+    };
+
     try {
-        // Pega a extensão real do arquivo ou define 'jpg' como padrão
-        const nomeOriginal = file.name || 'foto.jpg';
-        let fileExt = nomeOriginal.split('.').pop().toLowerCase();
-        
-        // Se por algum motivo não tiver extensão, define jpg
-        if (!fileExt || fileExt === nomeOriginal) {
-            fileExt = 'jpg';
-        }
+        // 1. Processa a foto (converte HEIC para JPG)
+        const fotoPronta = await converterParaJpeg(file);
 
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        // 2. Garante o nome final em .jpg
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
 
-        // Define o tipo do arquivo (MIME type)
-        const mimeType = file.type || `image/${fileExt === 'jpg' ? 'jpeg' : fileExt}`;
-
-        // 1. Envia o arquivo para a pasta 'fotos' no Supabase
+        // 3. Envia para o Supabase Storage
         const { data, error } = await supabaseClient
             .storage
             .from('fotos')
-            .upload(fileName, file, {
-                contentType: mimeType,
+            .upload(fileName, fotoPronta, {
+                contentType: 'image/jpeg',
                 cacheControl: '3600',
                 upsert: false
             });
 
         if (error) throw error;
 
-        // 2. Obtém o link público correto
+        // 4. Pega o Link Público da imagem
         const { data: publicUrlData } = supabaseClient
             .storage
             .from('fotos')
@@ -63,7 +82,6 @@ async function uploadFotoParaSupabase(file) {
         return null;
     }
 }
-
 // ==========================================
 // INICIALIZAÇÃO E CARREGAMENTO DE DADOS
 // ==========================================
