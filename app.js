@@ -331,7 +331,39 @@ function abrirFotoGrande(src) {
     document.getElementById('imgGrande').src = src;
     document.getElementById('modalFotoGrande').classList.add('active');
 }
+// Função para compactar fotos do celular antes de enviar para o banco
+function processarFoto(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 1024; // Redimensiona para no máximo 1024px
+                const scaleFactor = MAX_WIDTH / img.width;
+                
+                if (scaleFactor < 1) {
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleFactor;
+                } else {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                }
 
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // Converte em um JPEG leve (70% de qualidade)
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                resolve(dataUrl);
+            };
+            img.onerror = (error) => reject(error);
+        };
+        reader.onerror = (error) => reject(error);
+    });
+}
 function fecharFotoGrande() {
     document.getElementById('modalFotoGrande').classList.remove('active');
 }
