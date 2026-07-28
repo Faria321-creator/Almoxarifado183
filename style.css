@@ -516,3 +516,41 @@ body.aba-busca-ativa .coluna-acao {
     font-size: 1.5rem;
     color: #94a3b8;
 }
+/* ==========================================
+   AJUSTES EXCLUSIVOS PARA CELULAR (Telas < 768px)
+   ========================================== */
+@media (max-width: 768px) {
+    
+    /* 1. Ajusta o conteiner principal para empilhar os elementos */
+    body, .container, .main-layout {
+        flex-direction: column !important;
+        padding: 10px !important;
+    }
+
+    /* 2. Barra Lateral / Menu vira topo */
+    .sidebar, .menu-lateral {
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    /* 3. Permite rolagem lateral na tabela para não quebrar a tela */
+    .tabela-container, .table-wrapper {
+        overflow-x: auto !important;
+        display: block;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 4. Aumenta os botões para facilitar o toque na tela do celular */
+    button, .btn {
+        width: 100% !important; /* Botões ocupam a largura total */
+        padding: 12px !important;
+        font-size: 16px !important;
+        margin-bottom: 8px;
+    }
+
+    /* 5. Ajusta os campos de texto do formulário de cadastro */
+    input[type="text"], input[type="number"], select, textarea {
+        font-size: 16px !important; /* Evita que o iPhone dê zoom automático ao focar no campo */
+        padding: 10px !important;
+    }
+}
