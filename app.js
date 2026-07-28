@@ -16,51 +16,52 @@ let fotoBase64Edicao = null;
 // ==========================================
 // FUNÇÃO MESTRA DE COMPRESSÃO DE FOTOS
 // ==========================================
-function processarFoto(file) {
-    return new Promise((resolve, reject) => {
-        if (!file) return resolve(null);
+document.addEventListener('DOMContentLoaded', () => {
+    const fotoInput = document.getElementById('fotoInput');
+    const editFotoInput = document.getElementById('edit-fotoInput');
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
+    if (fotoInput) {
+        fotoInput.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const preview = document.getElementById('previewCadastro');
+                if (preview) preview.innerHTML = '⏳ Carregando...';
                 
-                // Define tamanho máximo seguro para salvamento rápido no banco
-                const MAX_SIZE = 800; 
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_SIZE) {
-                        height = Math.round((height * MAX_SIZE) / width);
-                        width = MAX_SIZE;
+                try {
+                    fotoBase64Cadastro = await processarFoto(file);
+                    if (preview) {
+                        preview.innerHTML = `<img src="${fotoBase64Cadastro}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
                     }
-                } else {
-                    if (height > MAX_SIZE) {
-                        width = Math.round((width * MAX_SIZE) / height);
-                        height = MAX_SIZE;
-                    }
+                } catch (err) {
+                    console.error("Erro na foto:", err);
+                    if (preview) preview.innerHTML = '❌ Erro na foto';
                 }
+            }
+        });
+    }
 
-                canvas.width = width;
-                canvas.height = height;
+    if (editFotoInput) {
+        editFotoInput.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const previewEdit = document.getElementById('edit-preview');
+                if (previewEdit) previewEdit.innerHTML = '⏳ Carregando...';
 
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
+                try {
+                    fotoBase64Edicao = await processarFoto(file);
+                    if (previewEdit) {
+                        previewEdit.innerHTML = `<img src="${fotoBase64Edicao}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
+                    }
+                } catch (err) {
+                    console.error("Erro na foto:", err);
+                    if (previewEdit) previewEdit.innerHTML = '❌ Erro na foto';
+                }
+            }
+        });
+    }
 
-                // Exporta em JPEG compacto (50% de qualidade)
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-                resolve(dataUrl);
-            };
-            img.onerror = (error) => reject(error);
-            img.src = event.target.result;
-        };
-        reader.onerror = (error) => reject(error);
-    });
-}
-
+    carregarDadosDoBanco();
+});
 // ==========================================
 // INICIALIZAÇÃO E CARREGAMENTO DE DADOS
 // ==========================================
