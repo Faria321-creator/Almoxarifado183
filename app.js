@@ -10,58 +10,48 @@ let inventario = [];
 let abaAtiva = 'busca'; 
 let filtroCategoriaAtivo = 'Todos';
 
-let fotoBase64Cadastro = null;
-let fotoBase64Edicao = null;
+let fotoFileCadastro = null;
+let fotoFileEdicao = null;
 
 // ==========================================
-// FUNÇÃO MESTRA DE COMPRESSÃO DE FOTOS
+// UPLOAD DE FOTO PARA O STORAGE DO SUPABASE
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    const fotoInput = document.getElementById('fotoInput');
-    const editFotoInput = document.getElementById('edit-fotoInput');
+async function uploadFotoParaSupabase(file) {
+    if (!file) return null;
 
-    if (fotoInput) {
-        fotoInput.addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const preview = document.getElementById('previewCadastro');
-                if (preview) preview.innerHTML = '⏳ Carregando...';
-                
-                try {
-                    fotoBase64Cadastro = await processarFoto(file);
-                    if (preview) {
-                        preview.innerHTML = `<img src="${fotoBase64Cadastro}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
-                    }
-                } catch (err) {
-                    console.error("Erro na foto:", err);
-                    if (preview) preview.innerHTML = '❌ Erro na foto';
-                }
-            }
-        });
+    try {
+        // Cria um nome único para o arquivo usando a data e hora atual
+        const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        // Envia o arquivo direto para a pasta "fotos" no Supabase Storage
+        const { data, error } = await supabaseClient
+            .storage
+            .from('fotos')
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (error) {
+            console.error("Erro no Upload Storage:", error);
+            throw error;
+        }
+
+        // Pega o Link Público da imagem salva
+        const { data: publicUrlData } = supabaseClient
+            .storage
+            .from('fotos')
+            .getPublicUrl(fileName);
+
+        return publicUrlData.publicUrl;
+    } catch (err) {
+        console.error("Falha ao subir imagem para o Storage:", err);
+        alert("Aviso: Não foi possível enviar a foto. O item será cadastrado sem imagem.");
+        return null;
     }
+}
 
-    if (editFotoInput) {
-        editFotoInput.addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const previewEdit = document.getElementById('edit-preview');
-                if (previewEdit) previewEdit.innerHTML = '⏳ Carregando...';
-
-                try {
-                    fotoBase64Edicao = await processarFoto(file);
-                    if (previewEdit) {
-                        previewEdit.innerHTML = `<img src="${fotoBase64Edicao}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
-                    }
-                } catch (err) {
-                    console.error("Erro na foto:", err);
-                    if (previewEdit) previewEdit.innerHTML = '❌ Erro na foto';
-                }
-            }
-        });
-    }
-
-    carregarDadosDoBanco();
-});
 // ==========================================
 // INICIALIZAÇÃO E CARREGAMENTO DE DADOS
 // ==========================================
@@ -88,23 +78,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const editFotoInput = document.getElementById('edit-fotoInput');
 
     if (fotoInput) {
-        fotoInput.addEventListener('change', async function(e) {
+        fotoInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                document.getElementById('previewCadastro').innerHTML = '<span>Compressing photo...</span>';
-                fotoBase64Cadastro = await processarFoto(file);
-                document.getElementById('previewCadastro').innerHTML = `<img src="${fotoBase64Cadastro}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
+                fotoFileCadastro = file;
+                // Cria uma miniatura temporária na tela usando URL do objeto local
+                const objectUrl = URL.createObjectURL(file);
+                document.getElementById('previewCadastro').innerHTML = `<img src="${objectUrl}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
             }
         });
     }
 
     if (editFotoInput) {
-        editFotoInput.addEventListener('change', async function(e) {
+        editFotoInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                document.getElementById('edit-preview').innerHTML = '<span>Compressing photo...</span>';
-                fotoBase64Edicao = await processarFoto(file);
-                document.getElementById('edit-preview').innerHTML = `<img src="${fotoBase64Edicao}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
+                fotoFileEdicao = file;
+                const objectUrl = URL.createObjectURL(file);
+                document.getElementById('edit-preview').innerHTML = `<img src="${objectUrl}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
             }
         });
     }
@@ -217,6 +208,14 @@ async function cadastrarNovoItem() {
     const local = document.getElementById('local').value.trim();
     const observacoes = document.getElementById('observacoes').value.trim();
 
+    let urlFoto = null;
+
+    // Se o usuário tirou ou escolheu uma foto no celular
+    if (fotoFileCadastro) {
+        // Envia direto o arquivo da foto para o Storage do Supabase
+        urlFoto = await uploadFotoParaSupabase(fotoFileCadastro);
+    }
+
     const novoItem = {
         categoria,
         codigo,
@@ -226,7 +225,7 @@ async function cadastrarNovoItem() {
         quantidade,
         local,
         observacoes,
-        foto: fotoBase64Cadastro
+        foto: urlFoto
     };
 
     try {
@@ -245,10 +244,12 @@ async function cadastrarNovoItem() {
         document.getElementById('local').value = '';
         document.getElementById('observacoes').value = '';
         document.getElementById('fotoInput').value = '';
-        document.getElementById('previewCadastro').innerHTML = '';
-        fotoBase64Cadastro = null;
+        if (document.getElementById('previewCadastro')) {
+            document.getElementById('previewCadastro').innerHTML = '';
+        }
+        fotoFileCadastro = null;
 
-        alert('Item cadastrado com sucesso na Nuvem!');
+        alert('Item cadastrado com sucesso!');
         
         await carregarDadosDoBanco();
         mudarAba('busca');
@@ -274,7 +275,8 @@ function abrirModalEdicao(idItem) {
     document.getElementById('edit-observacoes').value = item.observacoes || '';
     
     document.getElementById('edit-fotoInput').value = '';
-    fotoBase64Edicao = item.foto;
+    fotoFileEdicao = null;
+
     if (item.foto) {
         document.getElementById('edit-preview').innerHTML = `<img src="${item.foto}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
     } else {
@@ -290,6 +292,13 @@ function fecharModal() {
 
 async function salvarEdicaoItem() {
     const idItem = parseInt(document.getElementById('edit-id').value);
+    const itemAtual = inventario.find(i => i.id === idItem);
+
+    let urlFoto = itemAtual ? itemAtual.foto : null;
+
+    if (fotoFileEdicao) {
+        urlFoto = await uploadFotoParaSupabase(fotoFileEdicao);
+    }
 
     const dadosAtualizados = {
         categoria: document.getElementById('edit-categoria').value,
@@ -300,7 +309,7 @@ async function salvarEdicaoItem() {
         quantidade: parseInt(document.getElementById('edit-quantidade').value) || 0,
         local: document.getElementById('edit-local').value.trim(),
         observacoes: document.getElementById('edit-observacoes').value.trim(),
-        foto: fotoBase64Edicao
+        foto: urlFoto
     };
 
     try {
@@ -312,7 +321,7 @@ async function salvarEdicaoItem() {
         if (error) throw error;
 
         fecharModal();
-        alert('Item atualizado com sucesso na Nuvem!');
+        alert('Item atualizado com sucesso!');
         await carregarDadosDoBanco();
 
     } catch (error) {
@@ -322,7 +331,7 @@ async function salvarEdicaoItem() {
 }
 
 async function removerItemDoInventario(idItem) {
-    if (confirm("Tem certeza que deseja excluir este item do inventário em nuvem?")) {
+    if (confirm("Tem certeza que deseja excluir este item do inventário?")) {
         try {
             const { error } = await supabaseClient
                 .from('inventario')
