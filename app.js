@@ -16,35 +16,47 @@ let fotoFileEdicao = null;
 // ==========================================
 // UPLOAD DE FOTO PARA O STORAGE DO SUPABASE
 // ==========================================
+// ==========================================
+// UPLOAD DE FOTO CORRIGIDO PARA O SUPABASE
+// ==========================================
 async function uploadFotoParaSupabase(file) {
     if (!file) return null;
 
     try {
-        // Cria um nome único para o arquivo usando a data e hora atual
-        const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
+        // Pega a extensão real do arquivo ou define 'jpg' como padrão
+        const nomeOriginal = file.name || 'foto.jpg';
+        let fileExt = nomeOriginal.split('.').pop().toLowerCase();
+        
+        // Se por algum motivo não tiver extensão, define jpg
+        if (!fileExt || fileExt === nomeOriginal) {
+            fileExt = 'jpg';
+        }
+
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-        // Envia o arquivo direto para a pasta "fotos" no Supabase Storage
+        // Define o tipo do arquivo (MIME type)
+        const mimeType = file.type || `image/${fileExt === 'jpg' ? 'jpeg' : fileExt}`;
+
+        // 1. Envia o arquivo para a pasta 'fotos' no Supabase
         const { data, error } = await supabaseClient
             .storage
             .from('fotos')
             .upload(fileName, file, {
+                contentType: mimeType,
                 cacheControl: '3600',
                 upsert: false
             });
 
-        if (error) {
-            console.error("Erro no Upload Storage:", error);
-            throw error;
-        }
+        if (error) throw error;
 
-        // Pega o Link Público da imagem salva
+        // 2. Obtém o link público correto
         const { data: publicUrlData } = supabaseClient
             .storage
             .from('fotos')
             .getPublicUrl(fileName);
 
         return publicUrlData.publicUrl;
+
     } catch (err) {
         console.error("Falha ao subir imagem para o Storage:", err);
         alert("Aviso: Não foi possível enviar a foto. O item será cadastrado sem imagem.");
