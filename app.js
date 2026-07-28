@@ -14,6 +14,54 @@ let fotoBase64Cadastro = null;
 let fotoBase64Edicao = null;
 
 // ==========================================
+// FUNÇÃO MESTRA DE COMPRESSÃO DE FOTOS
+// ==========================================
+function processarFoto(file) {
+    return new Promise((resolve, reject) => {
+        if (!file) return resolve(null);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                
+                // Define tamanho máximo seguro para salvamento rápido no banco
+                const MAX_SIZE = 800; 
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_SIZE) {
+                        height = Math.round((height * MAX_SIZE) / width);
+                        width = MAX_SIZE;
+                    }
+                } else {
+                    if (height > MAX_SIZE) {
+                        width = Math.round((width * MAX_SIZE) / height);
+                        height = MAX_SIZE;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Exporta em JPEG compacto (50% de qualidade)
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+                resolve(dataUrl);
+            };
+            img.onerror = (error) => reject(error);
+            img.src = event.target.result;
+        };
+        reader.onerror = (error) => reject(error);
+    });
+}
+
+// ==========================================
 // INICIALIZAÇÃO E CARREGAMENTO DE DADOS
 // ==========================================
 
@@ -39,55 +87,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const editFotoInput = document.getElementById('edit-fotoInput');
 
     if (fotoInput) {
-        fotoInput.addEventListener('change', function(e) {
+        fotoInput.addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 600;
-                        const scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
-
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        fotoBase64Cadastro = canvas.toDataURL('image/jpeg', 0.7);
-                        document.getElementById('previewCadastro').innerHTML = `<img src="${fotoBase64Cadastro}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
-                    };
-                    img.src = evt.target.result;
-                };
-                reader.readAsDataURL(file);
+                document.getElementById('previewCadastro').innerHTML = '<span>Compressing photo...</span>';
+                fotoBase64Cadastro = await processarFoto(file);
+                document.getElementById('previewCadastro').innerHTML = `<img src="${fotoBase64Cadastro}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
             }
         });
     }
 
     if (editFotoInput) {
-        editFotoInput.addEventListener('change', function(e) {
+        editFotoInput.addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 600;
-                        const scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
-
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        fotoBase64Edicao = canvas.toDataURL('image/jpeg', 0.7);
-                        document.getElementById('edit-preview').innerHTML = `<img src="${fotoBase64Edicao}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
-                    };
-                    img.src = evt.target.result;
-                };
-                reader.readAsDataURL(file);
+                document.getElementById('edit-preview').innerHTML = '<span>Compressing photo...</span>';
+                fotoBase64Edicao = await processarFoto(file);
+                document.getElementById('edit-preview').innerHTML = `<img src="${fotoBase64Edicao}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
             }
         });
     }
@@ -331,39 +347,7 @@ function abrirFotoGrande(src) {
     document.getElementById('imgGrande').src = src;
     document.getElementById('modalFotoGrande').classList.add('active');
 }
-// Função para compactar fotos do celular antes de enviar para o banco
-function processarFoto(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 1024; // Redimensiona para no máximo 1024px
-                const scaleFactor = MAX_WIDTH / img.width;
-                
-                if (scaleFactor < 1) {
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleFactor;
-                } else {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                }
 
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                // Converte em um JPEG leve (70% de qualidade)
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                resolve(dataUrl);
-            };
-            img.onerror = (error) => reject(error);
-        };
-        reader.onerror = (error) => reject(error);
-    });
-}
 function fecharFotoGrande() {
     document.getElementById('modalFotoGrande').classList.remove('active');
 }
