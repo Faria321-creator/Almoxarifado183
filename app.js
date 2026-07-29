@@ -391,3 +391,46 @@ function abrirFotoGrande(src) {
 function fecharFotoGrande() {
     document.getElementById('modalFotoGrande').classList.remove('active');
 }
+
+// ... seus códigos e funções anteriores ...
+
+
+// ==========================================
+// GERAR RELATÓRIO EM PDF DO INVENTÁRIO
+// ==========================================
+function gerarRelatorioPDF() {
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    const tabelaOriginal = document.querySelector("table");
+    if (!tabelaOriginal) {
+        alert("Nenhuma tabela encontrada para gerar o relatório.");
+        return;
+    }
+
+    const elementoRelatorio = document.createElement("div");
+    elementoRelatorio.style.padding = "20px";
+    elementoRelatorio.style.fontFamily = "Arial, sans-serif";
+
+    elementoRelatorio.innerHTML = `
+        <div style="text-align: center; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; margin-bottom: 20px;">
+            <h1 style="margin: 0; color: #1a73e8; font-size: 22px;">Almoxarifado - Relatório de Estoque</h1>
+            <p style="margin: 5px 0 0 0; color: #555; font-size: 12px;">Gerado em: ${dataAtual} às ${horaAtual}</p>
+        </div>
+        ${tabelaOriginal.outerHTML}
+    `;
+
+    // Remove botões de ação para não saírem no PDF
+    const botoesAcao = elementoRelatorio.querySelectorAll(".btn-acao, th:last-child, td:last-child");
+    botoesAcao.forEach(el => el.remove());
+
+    const opcoes = {
+        margin: [10, 10, 10, 10],
+        filename: `Relatorio_Estoque_${dataAtual.replace(/\//g, '-')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opcoes).from(elementoRelatorio).save();
+}
