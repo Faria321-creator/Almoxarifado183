@@ -6,9 +6,13 @@
     <title>Almoxarifado - Controle de Inventário</title>
     <link rel="stylesheet" href="style.css">
     
+    <!-- Biblioteca para gerar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <!-- IMPORTANTE: Biblioteca oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
+    <!-- Biblioteca para compressão de imagens -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
 </head>
 <body>
 
@@ -124,6 +128,13 @@
                         </div>
                     </form>
                 </section>
+            </div>
+
+            <!-- BARRA DE AÇÕES / BOTÃO DE PDF -->
+            <div style="margin: 20px 0 10px 0; display: flex; justify-content: flex-end;">
+                <button type="button" id="btnExportarPDF" onclick="gerarRelatorioPDF()" style="background-color: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    📄 Baixar Relatório em PDF
+                </button>
             </div>
 
             <!-- Tabela Geral de Itens -->
