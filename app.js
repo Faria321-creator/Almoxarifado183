@@ -432,6 +432,51 @@ function gerarRelatorioPDF() {
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
+// ==========================================
+// FUNÇÃO PARA DUPLICAR UM ITEM DO ALMOXARIFADO
+// ==========================================
+async function duplicarItem(id) {
+    // 1. Procura o item no array 'inventario' pelo ID
+    const itemOriginal = inventario.find(item => String(item.id) === String(id));
 
+    if (!itemOriginal) {
+        alert("Erro ao encontrar o item para duplicar.");
+        return;
+    }
+
+    // 2. Preenche os campos da tela de CADASTRO com os dados existentes
+    document.getElementById("categoria").value = itemOriginal.categoria || "Outros";
+    document.getElementById("codigo").value = itemOriginal.codigo || "";
+    document.getElementById("marca").value = itemOriginal.marca || "";
+    document.getElementById("modelo").value = itemOriginal.modelo || "";
+    document.getElementById("sn").value = itemOriginal.sn ? `${itemOriginal.sn} (CÓPIA)` : "S/N";
+    document.getElementById("quantidade").value = itemOriginal.quantidade || 1;
+    document.getElementById("local").value = itemOriginal.local || "";
+    document.getElementById("observacoes").value = itemOriginal.observacoes || "";
+
+    // 3. Prepara a pré-visualização da foto existente (se houver)
+    const previewContainer = document.getElementById("previewCadastro");
+    if (previewContainer) {
+        if (itemOriginal.foto) {
+            previewContainer.innerHTML = `
+                <img src="${itemOriginal.foto}" id="imgPreviewDuplicada" style="max-width: 100px; max-height: 100px; border-radius: 4px; margin-top: 8px;">
+                <p style="font-size: 11px; color: #666; margin: 2px 0 0 0;">Mantendo foto do item original</p>
+            `;
+            // Armazena a foto base64/URL na memória do preview
+            previewContainer.dataset.fotoBase64 = itemOriginal.foto;
+        } else {
+            previewContainer.innerHTML = "";
+            delete previewContainer.dataset.fotoBase64;
+        }
+    }
+
+    // 4. Alterna automaticamente para a aba de cadastro
+    if (typeof mudarAba === "function") {
+        mudarAba("cadastro");
+    }
+
+    // 5. Rola a tela suavemente para o topo do formulário
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
     html2pdf().set(opcoes).from(elementoRelatorio).save();
 }
