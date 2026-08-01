@@ -103,7 +103,8 @@ body {
 .main-content {
     flex: 1;
     padding: 30px;
-    max-width: 1300px;
+    width: 100%
+    max-width: 100%;
 }
 
 .header {
