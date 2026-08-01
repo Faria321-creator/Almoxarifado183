@@ -200,10 +200,11 @@ function renderizarTabela() {
 
     itensFiltrados.forEach(item => {
         const tr = document.createElement('tr');
-        
-        const botoesAcao = `<button class="btn-editar" onclick="abrirModalEdicao(${item.id})">✏️ Editar</button>
-                            <button class="btn-excluir" onclick="removerItemDoInventario(${item.id})">Excluir</button>`;
-
+        const botoesAcao = `
+            <button class="btn-editar" onclick="abrirModalEdicao('${item.id}')">✏️ Editar</button>
+            <button class="btn-excluir" onclick="removerItemDoInventario('${item.id}')">🗑️ Excluir</button>
+            <button class="btn-acao btn-duplicar" onclick="duplicarItem('${item.id}')" title="Duplicar Item">📋 Duplicar</button>
+        `;
         const tdFoto = item.foto 
             ? `<td><img src="${item.foto}" class="miniatura-tabela" onclick="abrirFotoGrande('${item.foto}')" alt="Foto" style="width:40px; height:40px; object-fit:cover; border-radius:4px; cursor:pointer;"></td>`
             : `<td style="text-align:center;"><span class="sem-foto-icon">📷</span></td>`;
