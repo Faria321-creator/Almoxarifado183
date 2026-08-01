@@ -508,7 +508,7 @@ async function duplicarItem(id) {
 // ==========================================
 async function fazerLogout() {
     if (confirm("Deseja realmente sair do sistema?")) {
-        await _supabase.auth.signOut();
+        await supabaseclient.auth.signOut();
         window.location.href = 'login.html';
     }
 }
