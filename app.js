@@ -1,4 +1,25 @@
 // ==========================================
+// VERIFICAÇÃO DE USUÁRIO LOGADO
+// ==========================================
+async function verificarSessao() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    
+    if (!session) {
+        // Se não tiver sessão ativa, volta para o login
+        window.location.href = 'login.html';
+    } else {
+        console.log("Usuário logado:", session.user.email);
+        // Exibe o e-mail/nome do usuário logado no topo do painel
+        const elementoResponsavel = document.getElementById('responsavelNome');
+        if (elementoResponsavel) {
+            elementoResponsavel.textContent = `Operador: ${session.user.email}`;
+        }
+    }
+}
+
+// Chame no início do carregamento
+verificarSessao();
+// ==========================================
 // CONFIGURAÇÃO DO SUPABASE
 // ==========================================
 const SUPABASE_URL = 'https://tocmqlsicxuxfkiptgaj.supabase.co';
@@ -477,6 +498,15 @@ async function duplicarItem(id) {
 
     // 5. Rola a tela suavemente para o topo do formulário
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+    // ==========================================
+// FUNÇÃO DE LOGOUT
+// ==========================================
+async function fazerLogout() {
+    if (confirm("Deseja realmente sair do sistema?")) {
+        await _supabase.auth.signOut();
+        window.location.href = 'login.html';
+    }
 }
     html2pdf().set(opcoes).from(elementoRelatorio).save();
 }
