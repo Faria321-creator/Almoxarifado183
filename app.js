@@ -1,15 +1,22 @@
 // ==========================================
+// CONFIGURAÇÃO DO SUPABASE
+// ==========================================
+const SUPABASE_URL = 'https://tocmqlsicxuxfkiptgaj.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvY21xbHNpY3h1eGZraXB0Z2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3...';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ==========================================
 // VERIFICAÇÃO DE USUÁRIO LOGADO
 // ==========================================
 async function verificarSessao() {
-    const { data: { session } } = await _supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (!session) {
         // Se não tiver sessão ativa, volta para o login
         window.location.href = 'login.html';
     } else {
         console.log("Usuário logado:", session.user.email);
-        // Exibe o e-mail/nome do usuário logado no topo do painel
         const elementoResponsavel = document.getElementById('responsavelNome');
         if (elementoResponsavel) {
             elementoResponsavel.textContent = `Operador: ${session.user.email}`;
@@ -17,15 +24,8 @@ async function verificarSessao() {
     }
 }
 
-// Chame no início do carregamento
+// Chame após inicializar o supabaseClient
 verificarSessao();
-// ==========================================
-// CONFIGURAÇÃO DO SUPABASE
-// ==========================================
-const SUPABASE_URL = 'https://tocmqlsicxuxfkiptgaj.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvY21xbHNpY3h1eGZraXB0Z2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTIyODEsImV4cCI6MjA5OTYyODI4MX0.B-UKh4qMQG02guuJhIlI-ZB0d4OjlByFyfOoGISiqMY';
-
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let inventario = [];
 let abaAtiva = 'busca'; 
