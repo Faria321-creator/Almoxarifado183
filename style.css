@@ -554,3 +554,18 @@ body.aba-busca-ativa .coluna-acao {
         padding: 10px !important;
     }
 }
+.btn-duplicar {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-duplicar:hover {
+    background-color: #5a6268;
+}
