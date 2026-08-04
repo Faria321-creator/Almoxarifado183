@@ -354,12 +354,21 @@ function abrirModalEdicao(idItem) {
         }
     }
 
-    // Exibe o modal na tela adicionando a classe 'active'
+    // Exibe o modal na tela adicionando a classe 'active' e forçando o display
     const modal = document.getElementById('modalEditar');
     if (modal) {
         modal.classList.add('active');
+        modal.style.display = 'flex';
     } else {
         console.error("Elemento #modalEditar não foi encontrado no HTML!");
+    }
+}
+
+function fecharModal() {
+    const modal = document.getElementById('modalEditar');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
     }
 }
 
