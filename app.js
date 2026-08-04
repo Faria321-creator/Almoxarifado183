@@ -313,42 +313,63 @@ async function cadastrarNovoItem() {
     }
 }
 
+// ==========================================
+// MODAL DE EDIÇÃO E SALVAMENTO CORRIGIDOS
+// ==========================================
+
 function abrirModalEdicao(idItem) {
-    const item = inventario.find(i => i.id === idItem);
-    if (!item) return;
+    // Usa String() para comparar sem ter problema de texto vs número
+    const item = inventario.find(i => String(i.id) === String(idItem));
 
-    document.getElementById('edit-id').value = item.id;
-    document.getElementById('edit-categoria').value = item.categoria;
-    document.getElementById('edit-codigo').value = item.codigo;
-    document.getElementById('edit-marca').value = item.marca;
-    document.getElementById('edit-modelo').value = item.modelo;
-    document.getElementById('edit-sn').value = item.sn;
-    document.getElementById('edit-quantidade').value = item.quantidade;
-    document.getElementById('edit-local').value = item.local;
-    document.getElementById('edit-observacoes').value = item.observacoes || '';
-    
-    document.getElementById('edit-fotoInput').value = '';
-    fotoFileEdicao = null;
-
-    if (item.foto) {
-        document.getElementById('edit-preview').innerHTML = `<img src="${item.foto}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
-    } else {
-        document.getElementById('edit-preview').innerHTML = `<span class="sem-foto-icon">📷</span>`;
+    if (!item) {
+        console.error("Item não encontrado no inventário para o ID:", idItem);
+        alert("Erro: Item não encontrado no sistema.");
+        return;
     }
 
-    document.getElementById('modalEditar').classList.add('active');
-}
+    // Preenche os campos do formulário modal de edição
+    document.getElementById('edit-id').value = item.id;
+    document.getElementById('edit-categoria').value = item.categoria || 'Outros';
+    document.getElementById('edit-codigo').value = item.codigo || '';
+    document.getElementById('edit-marca').value = item.marca || '';
+    document.getElementById('edit-modelo').value = item.modelo || '';
+    document.getElementById('edit-sn').value = item.sn || '';
+    document.getElementById('edit-quantidade').value = item.quantidade || 1;
+    document.getElementById('edit-local').value = item.local || '';
+    document.getElementById('edit-observacoes').value = item.observacoes || '';
+    
+    // Limpa input de arquivo anterior
+    if (document.getElementById('edit-fotoInput')) {
+        document.getElementById('edit-fotoInput').value = '';
+    }
+    fotoFileEdicao = null;
 
-function fecharModal() {
-    document.getElementById('modalEditar').classList.remove('active');
+    // Pré-visualização da foto existente
+    const previewContainer = document.getElementById('edit-preview');
+    if (previewContainer) {
+        if (item.foto) {
+            previewContainer.innerHTML = `<img src="${item.foto}" alt="Preview" style="max-width:100px; border-radius:4px;">`;
+        } else {
+            previewContainer.innerHTML = `<span class="sem-foto-icon">📷</span>`;
+        }
+    }
+
+    // Exibe o modal na tela adicionando a classe 'active'
+    const modal = document.getElementById('modalEditar');
+    if (modal) {
+        modal.classList.add('active');
+    } else {
+        console.error("Elemento #modalEditar não foi encontrado no HTML!");
+    }
 }
 
 async function salvarEdicaoItem() {
-    const idItem = parseInt(document.getElementById('edit-id').value);
-    const itemAtual = inventario.find(i => i.id === idItem);
+    const idItem = document.getElementById('edit-id').value;
+    const itemAtual = inventario.find(i => String(i.id) === String(idItem));
 
     let urlFoto = itemAtual ? itemAtual.foto : null;
 
+    // Se uma nova foto foi selecionada no modal, faz o upload
     if (fotoFileEdicao) {
         urlFoto = await uploadFotoParaSupabase(fotoFileEdicao);
     }
@@ -379,7 +400,7 @@ async function salvarEdicaoItem() {
 
     } catch (error) {
         console.error("Erro ao atualizar item:", error.message);
-        alert("Erro ao atualizar informações.");
+        alert("Erro ao atualizar informações: " + error.message);
     }
 }
 
