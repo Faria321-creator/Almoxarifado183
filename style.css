@@ -570,3 +570,18 @@ body.aba-busca-ativa .coluna-acao {
 .btn-duplicar:hover {
     background-color: #5a6268;
 }
+/* Estiliza a opção padrão para parecer um placeholder */
+select:invalid {
+    color: #6c757d; /* A mesma cor cinza dos inputs */
+}
+
+/* Garante a mesma fonte e padding dos inputs */
+select {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #212529;
+}
+
+select option {
+    color: #212529; /* Cor normal preta para as opções dentro da lista */
+}
