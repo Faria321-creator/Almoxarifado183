@@ -33,31 +33,28 @@
             <div class="divisor"></div>
 
             <h3>Filtrar Categoria</h3>
-           <ul id="listaCategorias">
+         <ul id="listaCategorias">
     <li class="cat-item active" onclick="filtrarPorCategoria('Todos')">Todos os Itens</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('Consoles')">🎛️ Consoles</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Amplificadores')">🔊 Amplificadores</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('Processadores de áudio')">⚙️ Processadores</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Antenas RF')">📡 Antenas RF</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento AC')">⚡ AC</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('Notebooks')">💻 Not</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento AC/Fz')">⚡ Ac/Fz</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Ac 3m')">⚡ Ac3</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Ac 5m')">⚡ Ac5</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Ac 10m')">⚡ Ac10</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Ac 15m')">⚡ Ac15</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('BodPack')">📻 BodPacks</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('Plugon')">⚡ Plugon</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('Fones EAR / Monitor')">🎧 Fones EAR / Monitor</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('HeardSet')">🎧 HeadSet</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Combo')">🔌 XLR+Ac (Combo)</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Audio')">🔌 Cabos de Áudio</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - P2')">🔌 P2</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - P10')">🔌 P10</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - XLR')">🔌 XLR</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Caixas de Som')">📢 Caixas de Som</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Conectores de Audio')">🔧 Conectores</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Derivação Ac5m')">🔌 D/Ac5</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Derivação Ac10m')">🔌 D/Ac10</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Mic c/ Fio')">🎙️ Mic c/ Fio</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Mic s/ Fio')">📡 Mic s/ Fio</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Penta custicas')">🎛️ Penta Cústicas</li>
+    <li class="cat-item" onclick="filtrarPorCategoria('Mic s/ Fio')">🎙️ Mic s/ Fio</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Pentacústicas - Penta 10A')">🎛️ Penta 10A</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Pentacústicas - Penta 20A')">🎛️ Penta 20A</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Processadores de áudio')">⚙️ Processadores</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Transmissão')">📡 Transmissão</li>
     <li class="cat-item" onclick="filtrarPorCategoria('TVs')">📺 TVs</li>
     <li class="cat-item" onclick="filtrarPorCategoria('Outros')">📦 Outros</li>
@@ -90,30 +87,26 @@
                         <div class="grid-form">
                             <div class="form-group">
                                 <label for="categoria">Categoria</label>
-                                <select id="categoria" required>
-    <option value="Amplificadores">Amplificadores</option>
+                             <option value="Consoles">Consoles</option>
+<option value="Amplificadores">Amplificadores</option>
+<option value="Processadores de áudio">Processadores de áudio</option>
 <option value="Antenas RF">Antenas RF</option>
 <option value="Cabeamento AC">Cabeamento AC</option>
+<option value="Notebooks">Notebooks</option>
 <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
-<option value="BodPack">Bodpack</option>
-<option value="Cabeamento Ac 15m">Cabeamento Ac 15m</option>
-<option value="Cabeamento Ac 3m">Cabeamento Ac 3m</option>
-<option value="Cabeamento Ac 5m">Cabeamento Ac 5m</option>
+<option value="BodPack">BodPack</option>
+<option value="Plugon">Plugon</option>
+<option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
+<option value="HeardSet">HeadSet</option>
 <option value="Cabeamento Combo">Cabeamento Combo</option>
-<option value="Cabeamento de Audio">Cabeamento de Audio</option>
-<option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
 <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
+<option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
 <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
 <option value="Caixas de Som">Caixas de Som</option>
-<option value="Conectores de Audio">Conectores de Audio</option>
-<option value="Derivação Ac10m">Derivação Ac10m</option>
-<option value="Derivação Ac5m">Derivação Ac5m</option>
 <option value="Mic c/ Fio">Mic c/ Fio</option>
 <option value="Mic s/ Fio">Mic s/ Fio</option>
-<option value="Penta custicas">Penta custicas</option>
 <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
 <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
-<option value="Processadores de áudio">Processadores de áudio</option>
 <option value="Transmissão">Transmissão</option>
 <option value="TVs">TVs</option>
 <option value="Outros">Outros</option>
@@ -205,30 +198,26 @@
                 <div class="grid-form">
                     <div class="form-group">
                         <label for="edit-categoria">Categoria</label>
-                        <select id="edit-categoria" required>
-    <option value="Amplificadores">Amplificadores</option>
+                        <option value="Consoles">Consoles</option>
+<option value="Amplificadores">Amplificadores</option>
+<option value="Processadores de áudio">Processadores de áudio</option>
 <option value="Antenas RF">Antenas RF</option>
 <option value="Cabeamento AC">Cabeamento AC</option>
+<option value="Notebooks">Notebooks</option>
 <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
-<option value="Cabeamento Ac 10m">Cabeamento Ac 10m</option>
-<option value="Cabeamento Ac 15m">Cabeamento Ac 15m</option>
-<option value="Cabeamento Ac 3m">Cabeamento Ac 3m</option>
-<option value="Cabeamento Ac 5m">Cabeamento Ac 5m</option>
+<option value="BodPack">BodPack</option>
+<option value="Plugon">Plugon</option>
+<option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
+<option value="HeardSet">HeadSet</option>
 <option value="Cabeamento Combo">Cabeamento Combo</option>
-<option value="Cabeamento de Audio">Cabeamento de Audio</option>
-<option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
 <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
+<option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
 <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
 <option value="Caixas de Som">Caixas de Som</option>
-<option value="Conectores de Audio">Conectores de Audio</option>
-<option value="Derivação Ac10m">Derivação Ac10m</option>
-<option value="Derivação Ac5m">Derivação Ac5m</option>
 <option value="Mic c/ Fio">Mic c/ Fio</option>
 <option value="Mic s/ Fio">Mic s/ Fio</option>
-<option value="Penta custicas">Penta custicas</option>
 <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
 <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
-<option value="Processadores de áudio">Processadores de áudio</option>
 <option value="Transmissão">Transmissão</option>
 <option value="TVs">TVs</option>
 <option value="Outros">Outros</option>
