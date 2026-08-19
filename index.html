@@ -87,33 +87,35 @@
                     <form id="formCadastro" onsubmit="event.preventDefault(); cadastrarNovoItem();">
                         <div class="grid-form">
                             <div class="form-group">
-                                <label for="categoria">Categoria</label>
-                             <option value="Consoles">Consoles</option>
-<option value="Amplificadores">Amplificadores</option>
-<option value="Processadores de áudio">Processadores de áudio</option>
-<option value="Antenas RF">Antenas RF</option>
-<option value="Cabeamento AC">Cabeamento AC</option>
-<option value="Notebooks">Notebooks</option>
-<option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
-<option value="BodyPack">BodyPack</option>
-<option value="Plugon">Plugon</option>
-<option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
-<option value="HeardSet">HeadSet</option>
-<option value="Cabeamento Combo">Cabeamento Combo</option>
-<option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
-<option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
-<option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
-<option value="Caixas de Som">Caixas de Som</option>
-<option value="Caixas de Som">SubGrave</option>
-<option value="Mic c/ Fio">Mic c/ Fio</option>
-<option value="Mic s/ Fio">Mic s/ Fio</option>
-<option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
-<option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
-<option value="Transmissão">Transmissão</option>
-<option value="TVs">TVs</option>
-<option value="Outros">Outros</option>
-</select>
-                            </div>
+        <label for="categoria">Categoria</label>
+        <select id="categoria" required>
+        <option value="">Selecione uma categoria...</option>
+        <option value="Consoles">Consoles</option>
+        <option value="Amplificadores">Amplificadores</option>
+        <option value="Processadores de áudio">Processadores de áudio</option>
+        <option value="Antenas RF">Antenas RF</option>
+        <option value="Cabeamento AC">Cabeamento AC</option>
+        <option value="Notebooks">Notebooks</option>
+        <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
+        <option value="BodyPack">BodyPack</option>
+        <option value="Plugon">Plugon</option>
+        <option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
+        <option value="HeardSet">HeadSet</option>
+        <option value="Cabeamento Combo">Cabeamento Combo</option>
+        <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
+        <option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
+        <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
+        <option value="Caixas de Som">Caixas de Som</option>
+        <option value="SubGrave">SubGrave</option>
+        <option value="Mic c/ Fio">Mic c/ Fio</option>
+        <option value="Mic s/ Fio">Mic s/ Fio</option>
+        <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
+        <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
+        <option value="Transmissão">Transmissão</option>
+        <option value="TVs">TVs</option>
+        <option value="Outros">Outros</option>
+    </select>
+</div>
                             <div class="form-group">
                                 <label for="codigo">Código</label>
                                 <input type="text" id="codigo" placeholder="Ex: TLV, MCF, ANT, CBV" required>
@@ -199,34 +201,34 @@
                 <input type="hidden" id="edit-id">
                 <div class="grid-form">
                     <div class="form-group">
-                      <label for="edit-categoria">Categoria</label>
-        <select id="edit-categoria" required>
-<option value="Consoles">Consoles</option>
-<option value="Amplificadores">Amplificadores</option>
-<option value="Processadores de áudio">Processadores de áudio</option>
-<option value="Antenas RF">Antenas RF</option>
-<option value="Cabeamento AC">Cabeamento AC</option>
-<option value="Notebooks">Notebooks</option>
-<option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
-<option value="BodyPack">BodyPack</option>
-<option value="Plugon">Plugon</option>
-<option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
-<option value="HeardSet">HeadSet</option>
-<option value="Cabeamento Combo">Cabeamento Combo</option>
-<option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
-<option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
-<option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
-<option value="Caixas de Som">Caixas de Som</option>
-<option value="Caixas de Som">SubGrave</option>
-<option value="Mic c/ Fio">Mic c/ Fio</option>
-<option value="Mic s/ Fio">Mic s/ Fio</option>
-<option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
-<option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
-<option value="Transmissão">Transmissão</option>
-<option value="TVs">TVs</option>
-<option value="Outros">Outros</option>
-</select>
-                    </div>
+                      <select id="edit-categoria" required>
+        <option value="">Selecione uma categoria...</option>
+        <option value="Consoles">Consoles</option>
+        <option value="Amplificadores">Amplificadores</option>
+        <option value="Processadores de áudio">Processadores de áudio</option>
+        <option value="Antenas RF">Antenas RF</option>
+        <option value="Cabeamento AC">Cabeamento AC</option>
+        <option value="Notebooks">Notebooks</option>
+        <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
+        <option value="BodyPack">BodyPack</option>
+        <option value="Plugon">Plugon</option>
+        <option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
+        <option value="HeardSet">HeadSet</option>
+        <option value="Cabeamento Combo">Cabeamento Combo</option>
+        <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
+        <option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
+        <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
+        <option value="Caixas de Som">Caixas de Som</option>
+        <option value="SubGrave">SubGrave</option>
+        <option value="Mic c/ Fio">Mic c/ Fio</option>
+        <option value="Mic s/ Fio">Mic s/ Fio</option>
+        <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
+        <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
+        <option value="Transmissão">Transmissão</option>
+        <option value="TVs">TVs</option>
+        <option value="Outros">Outros</option>
+    </select>
+</div>
                     <div class="form-group">
                         <label for="edit-codigo">Código</label>
                         <input type="text" id="edit-codigo" required>
