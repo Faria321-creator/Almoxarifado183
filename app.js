@@ -251,6 +251,10 @@ function renderizarTabela() {
 // OPERAÇÕES DO BANCO DE DADOS (CRUD)
 // ==========================================
 
+// ==========================================
+// OPERAÇÕES DO BANCO DE DADOS (CRUD)
+// ==========================================
+
 async function cadastrarNovoItem() {
     const categoria = document.getElementById('categoria').value;
     const codigo = document.getElementById('codigo').value.trim();
@@ -263,51 +267,7 @@ async function cadastrarNovoItem() {
 
     let urlFoto = null;
 
-    // Se o usuário tirou ou escolheu uma foto no celular
-    if (fotoFileCadastro) {
-        // Envia direto o arquivo da foto para o Storage do Supabase
-        urlFoto = await uploadFotoParaSupabase(fotoFileCadastro);
-    }
-
-    const novoItem = {
-        categoria,
-        codigo,
-        marca,
-        modelo,
-        sn,
-        quantidade,
-        local,
-        observacoes,
-        foto: urlFoto
-    };
-       // === ENVIA CÓPIA PARA O ANALYTICS (SUPABASE) ===
-    if (typeof _supabase !== 'undefined') {
-        _supabase.from('equipamentos').upsert({
-            patrimonio: novoItem.codigo,        // 'codigo' do seu form entra como 'patrimonio'
-            classe: novoItem.categoria,         // 'categoria' entra como 'classe'
-            fabricante: novoItem.marca,         // 'marca' entra como 'fabricante'
-            modelo: novoItem.modelo,
-            num_serie: novoItem.sn,             // 'sn' entra como 'num_serie'
-            codigo_local: novoItem.local,       // 'local' entra como 'codigo_local'
-            status: 'Em Almoxarifado'
-        }, { onConflict: 'patrimonio' }).then(res => {
-            console.log("Item sincronizado com o Analytics!", res);
-        });
-    }
-
-   async function cadastrarNovoItem() {
-    const categoria = document.getElementById('categoria').value;
-    const codigo = document.getElementById('codigo').value.trim();
-    const marca = document.getElementById('marca').value.trim();
-    const modelo = document.getElementById('modelo').value.trim();
-    const sn = document.getElementById('sn').value.trim() || 'S/N';
-    const quantidade = parseInt(document.getElementById('quantidade').value) || 1;
-    const local = document.getElementById('local').value.trim();
-    const observacoes = document.getElementById('observacoes').value.trim();
-
-    let urlFoto = null;
-
-    // Upload de foto se houver arquivo
+    // Upload de foto se houver arquivo no input
     if (fotoFileCadastro) {
         urlFoto = await uploadFotoParaSupabase(fotoFileCadastro);
     }
@@ -324,24 +284,16 @@ async function cadastrarNovoItem() {
         foto: urlFoto
     };
 
-    // 1. Atualização Local (Memória / Interface)
-    if (typeof estoque !== 'undefined') estoque.push(novoItem);
-    if (typeof salvarEstoqueLocal === 'function') salvarEstoqueLocal();
-    if (typeof renderizarTabela === 'function') renderizarTabela();
-
-    // 2. Gravacao no Banco de Dados (Supabase)
     try {
-        const client = typeof _supabase !== 'undefined' ? _supabase : supabaseClient;
-
-        // Salva na tabela principal do sistema
-        const { error } = await client
+        // 1. Grava na tabela principal 'inventario'
+        const { error } = await supabaseClient
             .from('inventario')
             .insert([novoItem]);
 
         if (error) throw error;
 
-        // Envia cópia mapeada para a tabela do Analytics
-        await client.from('equipamentos').upsert({
+        // 2. Envia cópia mapeada para o Analytics ('equipamentos')
+        await supabaseClient.from('equipamentos').upsert({
             patrimonio: novoItem.codigo,
             classe: novoItem.categoria,
             fabricante: novoItem.marca,
@@ -351,7 +303,7 @@ async function cadastrarNovoItem() {
             status: 'Em Almoxarifado'
         }, { onConflict: 'patrimonio' });
 
-        // 3. Limpeza do Formulário
+        // 3. Limpa o formulário
         document.getElementById('codigo').value = '';
         document.getElementById('marca').value = '';
         document.getElementById('modelo').value = '';
@@ -370,8 +322,9 @@ async function cadastrarNovoItem() {
 
         alert('✅ Item cadastrado com sucesso!');
 
-        if (typeof carregarDadosDoBanco === 'function') await carregarDadosDoBanco();
-        if (typeof mudarAba === 'function') mudarAba('busca');
+        // 4. Recarrega a tabela e muda de aba
+        await carregarDadosDoBanco();
+        mudarAba('busca');
 
     } catch (error) {
         console.error("Erro ao cadastrar item no Supabase:", error);
