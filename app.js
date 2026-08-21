@@ -280,6 +280,28 @@ async function cadastrarNovoItem() {
         observacoes,
         foto: urlFoto
     };
+       // === ENVIA CÓPIA PARA O ANALYTICS (SUPABASE) ===
+    if (typeof _supabase !== 'undefined') {
+        _supabase.from('equipamentos').upsert({
+            patrimonio: novoItem.codigo,        // 'codigo' do seu form entra como 'patrimonio'
+            classe: novoItem.categoria,         // 'categoria' entra como 'classe'
+            fabricante: novoItem.marca,         // 'marca' entra como 'fabricante'
+            modelo: novoItem.modelo,
+            num_serie: novoItem.sn,             // 'sn' entra como 'num_serie'
+            codigo_local: novoItem.local,       // 'local' entra como 'codigo_local'
+            status: 'Em Almoxarifado'
+        }, { onConflict: 'patrimonio' }).then(res => {
+            console.log("Item sincronizado com o Analytics!", res);
+        });
+    }
+
+    // Mantém a gravação original que você já tinha no seu código (localStorage / array original)
+    estoque.push(novoItem);
+    salvarEstoqueLocal();
+    renderizarTabela();
+    limparFormulario();
+    alert("Item cadastrado com sucesso!");
+}
 
     try {
         const { data, error } = await supabaseClient
