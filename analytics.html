@@ -33,11 +33,7 @@
         
         .table-wrap { max-height: 650px; overflow: auto; margin-top: 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
         .chart-container { position: relative; height: 480px; width: 100%; }
-        
-        .upload-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .upload-box { flex: 1; min-width: 280px; }
-        
-        details summary { font-weight: bold; cursor: pointer; color: #17324d; margin-bottom: 10px; }
+        #statusConexao { padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
@@ -54,23 +50,7 @@
 
 <div class="container">
     
-    <div class="section" id="painelImportacao">
-        <details>
-            <summary>⚙️ Carga / Atualização de Planilhas no Supabase (Clique para expandir)</summary>
-            <div class="upload-grid" style="margin-top: 10px;">
-                <div class="upload-box">
-                    <label style="display: block; font-weight: bold; margin-bottom: 6px; color: #17324d;">1️⃣ Planilha de Equipamentos / Aparelhos (.xlsx):</label>
-                    <input type="file" id="excelEquipamentos" accept=".xlsx,.xls">
-                </div>
-                <div class="upload-box">
-                    <label style="display: block; font-weight: bold; margin-bottom: 6px; color: #17324d;">2️⃣ Planilha de Locais / Projetos (.xlsx):</label>
-                    <input type="file" id="excelLocais" accept=".xlsx,.xls">
-                </div>
-            </div>
-            <button id="btnProcessar" class="btn-header" style="background:#28a745;" onclick="sincronizarPlanilhasParaSupabase()">☁️ Enviar Dados para o Supabase</button>
-            <span id="statusProcessamento" style="margin-left: 15px; font-weight: bold; color: #17324d;"></span>
-        </details>
-    </div>
+    <div id="statusConexao"></div>
 
     <div class="section" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 220px;">
@@ -109,62 +89,82 @@
     <div class="section">
         <h3 style="margin-top: 0; color: #17324d;">Tabela Completa de Equipamentos (Nuvem)</h3>
         <div class="table-wrap">
-            <table id="tbl"></table>
+            <table id="tbl">
+                <tr><td style="padding: 20px; text-align: center;">⌛ Carregando dados do Supabase...</td></tr>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
-// CONFIGURAÇÃO SUPABASE
 const SUPABASE_URL = "https://tocmqlsicxuxfkiptgaj.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvY21xbHNpY3h1eGZraXB0Z2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTIyODEsImV4cCI6MjA5OTYyODI4MX0.B-UKh4qMQG02guuJhIlI-ZB0d4OjlByFyfOoGISiqMY"; 
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+let _supabase;
 let dadosCruzadosCompletos = [];
 let chart = null;
 
-function extrairProjetoENome(textoLocal) {
-    let str = String(textoLocal || '').trim();
-    let projeto = "Sem Projeto";
-    let nomeLocal = str;
-
-    let match = str.match(/\(([^)]+)\)/);
-    if (match) {
-        projeto = match[1].trim();
-        nomeLocal = str.replace(/\([^)]+\)/, '').trim();
+function exibirStatus(mensagem, tipo) {
+    const box = document.getElementById('statusConexao');
+    box.style.display = 'block';
+    box.innerText = mensagem;
+    if (tipo === 'erro') {
+        box.style.background = '#f8d7da';
+        box.style.color = '#721c24';
+    } else {
+        box.style.background = '#d4edda';
+        box.style.color = '#155724';
     }
-
-    return { nomeLocal, projeto };
 }
 
-// CARREGAR DADOS DO SUPABASE COM JOIN NATIVO
-async function carregarDadosDoSupabase() {
+async function inicializarEBuscarDados() {
     try {
-        // Realiza o JOIN nativo aproveitando a Foreign Key (codigo_local -> locais.codigo)
-        const { data: equipamentos, error } = await _supabase
-            .from('equipamentos')
-            .select(`
-                patrimonio,
-                classe,
-                modelo,
-                fabricante,
-                codigo_local,
-                prioridade,
-                num_serie,
-                referencia,
-                status,
-                locais (
-                    nome_local,
-                    projeto
-                )
-            `);
+        if (typeof supabase === 'undefined') {
+            exibirStatus("❌ A biblioteca do Supabase não foi carregada. Verifique sua conexão com a internet.", "erro");
+            return;
+        }
 
-        if (error) throw error;
+        _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        dadosCruzadosCompletos = (equipamentos || []).map(eq => {
-            const infoLoc = eq.locais;
-            const nomeSetor = infoLoc ? infoLoc.nome_local : 'Sem Nome Mapeado';
-            const nomeProjeto = infoLoc ? (infoLoc.projeto || 'Sem Projeto') : 'Sem Projeto';
+        // Busca tabela de locais
+        const { data: locais, error: errLoc } = await _supabase.from('locais').select('*');
+        if (errLoc) {
+            exibirStatus("❌ Erro ao consultar tabela 'locais': " + errLoc.message, "erro");
+            return;
+        }
+
+        // Busca tabela de equipamentos
+        const { data: equipamentos, error: errEq } = await _supabase.from('equipamentos').select('*');
+        if (errEq) {
+            exibirStatus("❌ Erro ao consultar tabela 'equipamentos': " + errEq.message, "erro");
+            return;
+        }
+
+        if (!equipamentos || equipamentos.length === 0) {
+            exibirStatus("⚠️ O banco respondeu com sucesso, mas a tabela 'equipamentos' está vazia.", "erro");
+            document.getElementById('tbl').innerHTML = "<tr><td style='padding:20px; text-align:center;'>Nenhum registro encontrado na tabela de equipamentos do Supabase.</td></tr>";
+            return;
+        }
+
+        // Mapeamento de locais para junção
+        let mapaLocais = {};
+        (locais || []).forEach(loc => {
+            let codLimpo = String(loc.codigo || '').replace(/^0+/, '').trim();
+            if (codLimpo) {
+                mapaLocais[codLimpo] = {
+                    nome: loc.nome_local || 'Sem Nome Mapeado',
+                    projeto: loc.projeto || 'Sem Projeto'
+                };
+            }
+        });
+
+        // Formatação dos dados
+        dadosCruzadosCompletos = equipamentos.map(eq => {
+            let codEqLimpo = String(eq.codigo_local || '').replace(/^0+/, '').trim();
+            let infoLoc = mapaLocais[codEqLimpo];
+
+            let nomeSetor = infoLoc ? infoLoc.nome : 'Sem Nome Mapeado';
+            let nomeProjeto = infoLoc ? infoLoc.projeto : 'Sem Projeto';
 
             return {
                 'Patrimônio': eq.patrimonio || '',
@@ -181,91 +181,14 @@ async function carregarDadosDoSupabase() {
             };
         });
 
+        exibirStatus(`✅ Dados carregados diretamente do Supabase! Total: ${dadosCruzadosCompletos.length} equipamentos.`, "sucesso");
+
         preencherFiltrosSelects();
         aplicarFiltros();
+
     } catch (err) {
-        console.error("Erro ao carregar do Supabase:", err);
-    }
-}
-
-function lerPlanilha(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-            const wb = XLSX.read(evt.target.result, { type: 'binary' });
-            const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
-            resolve(data);
-        };
-        reader.onerror = reject;
-        reader.readAsBinaryString(file);
-    });
-}
-
-// CARGA MANUAL VIA PLANILHAS PARA O SUPABASE (OPCIONAL)
-async function sincronizarPlanilhasParaSupabase() {
-    const fileEq = document.getElementById('excelEquipamentos').files[0];
-    const fileLoc = document.getElementById('excelLocais').files[0];
-    const status = document.getElementById('statusProcessamento');
-
-    if (!fileEq && !fileLoc) {
-        alert("Selecione pelo menos uma das planilhas para enviar!");
-        return;
-    }
-
-    status.innerText = "⏳ Enviando dados para o Supabase...";
-
-    try {
-        if (fileLoc) {
-            let rawLoc = await lerPlanilha(fileLoc);
-            let colsLoc = Object.keys(rawLoc[0]);
-            let colCodLoc = colsLoc.find(c => /cod/i.test(c.normalize("NFD"))) || colsLoc[0];
-            let colNomeLoc = colsLoc.find(c => /nome|local|desc|setor/i.test(c.normalize("NFD"))) || colsLoc[1] || colsLoc[0];
-
-            let listaLocaisUpsert = rawLoc.map(row => {
-                let cod = String(row[colCodLoc] || '').trim();
-                let parsed = extrairProjetoENome(row[colNomeLoc]);
-                return {
-                    codigo: cod,
-                    nome_local: parsed.nomeLocal,
-                    projeto: parsed.projeto
-                };
-            }).filter(l => l.codigo);
-
-            await _supabase.from('locais').upsert(listaLocaisUpsert, { onConflict: 'codigo' });
-        }
-
-        if (fileEq) {
-            let rawEq = await lerPlanilha(fileEq);
-            let colsEq = Object.keys(rawEq[0]);
-            
-            let colPat = colsEq.find(c => /patrimon|tombo/i.test(c.normalize("NFD"))) || colsEq[0];
-            let colClasse = colsEq.find(c => /classe/i.test(c.normalize("NFD"))) || colsEq[1] || '';
-            let colMod = colsEq.find(c => /modelo/i.test(c.normalize("NFD"))) || colsEq[2] || '';
-            let colFab = colsEq.find(c => /fabricante|marca/i.test(c.normalize("NFD"))) || colsEq[3] || '';
-            let colCodLoc = colsEq.find(c => /local|cod/i.test(c.normalize("NFD"))) || colsEq[4] || '';
-            let colPrio = colsEq.find(c => /prioridade/i.test(c.normalize("NFD"))) || colsEq[5] || '';
-            let colSerie = colsEq.find(c => /serie/i.test(c.normalize("NFD"))) || colsEq[6] || '';
-            let colRef = colsEq.find(c => /referencia/i.test(c.normalize("NFD"))) || colsEq[7] || '';
-
-            let listaEquipUpsert = rawEq.map((row, idx) => ({
-                patrimonio: String(row[colPat] || `ITEM-${idx + 1}`).trim(),
-                classe: String(row[colClasse] || '').trim(),
-                modelo: String(row[colMod] || '').trim(),
-                fabricante: String(row[colFab] || '').trim(),
-                codigo_local: String(row[colCodLoc] || '').trim(),
-                prioridade: String(row[colPrio] || '').trim(),
-                num_serie: String(row[colSerie] || '').trim(),
-                referencia: String(row[colRef] || '').trim()
-            })).filter(e => e.patrimonio);
-
-            await _supabase.from('equipamentos').upsert(listaEquipUpsert, { onConflict: 'patrimonio' });
-        }
-
-        status.innerText = "✅ Nuvem atualizada com sucesso!";
-        await carregarDadosDoSupabase();
-    } catch (err) {
-        console.error("Erro no Envio:", err);
-        status.innerText = "❌ Erro ao enviar para o banco de dados.";
+        console.error("Exceção:", err);
+        exibirStatus("❌ Erro inesperado no JavaScript: " + err.message, "erro");
     }
 }
 
@@ -384,8 +307,8 @@ function montarDashboard(dadosFiltrados) {
     document.getElementById('tbl').innerHTML = html;
 }
 
-// Inicia a leitura do banco de dados na abertura
-window.onload = carregarDadosDoSupabase;
+// Inicia automaticamente assim que a página é carregada
+document.addEventListener('DOMContentLoaded', inicializarEBuscarDados);
 </script>
 
 </body>
