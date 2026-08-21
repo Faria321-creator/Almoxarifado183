@@ -295,22 +295,63 @@ async function cadastrarNovoItem() {
         });
     }
 
-    // Mantém a gravação original que você já tinha no seu código (localStorage / array original)
-    estoque.push(novoItem);
-    salvarEstoqueLocal();
-    renderizarTabela();
-    limparFormulario();
-    alert("Item cadastrado com sucesso!");
-}
+   async function cadastrarNovoItem() {
+    const categoria = document.getElementById('categoria').value;
+    const codigo = document.getElementById('codigo').value.trim();
+    const marca = document.getElementById('marca').value.trim();
+    const modelo = document.getElementById('modelo').value.trim();
+    const sn = document.getElementById('sn').value.trim() || 'S/N';
+    const quantidade = parseInt(document.getElementById('quantidade').value) || 1;
+    const local = document.getElementById('local').value.trim();
+    const observacoes = document.getElementById('observacoes').value.trim();
 
+    let urlFoto = null;
+
+    // Upload de foto se houver arquivo
+    if (fotoFileCadastro) {
+        urlFoto = await uploadFotoParaSupabase(fotoFileCadastro);
+    }
+
+    const novoItem = {
+        categoria,
+        codigo,
+        marca,
+        modelo,
+        sn,
+        quantidade,
+        local,
+        observacoes,
+        foto: urlFoto
+    };
+
+    // 1. Atualização Local (Memória / Interface)
+    if (typeof estoque !== 'undefined') estoque.push(novoItem);
+    if (typeof salvarEstoqueLocal === 'function') salvarEstoqueLocal();
+    if (typeof renderizarTabela === 'function') renderizarTabela();
+
+    // 2. Gravacao no Banco de Dados (Supabase)
     try {
-        const { data, error } = await supabaseClient
+        const client = typeof _supabase !== 'undefined' ? _supabase : supabaseClient;
+
+        // Salva na tabela principal do sistema
+        const { error } = await client
             .from('inventario')
-            .insert([novoItem])
-            .select();
+            .insert([novoItem]);
 
         if (error) throw error;
 
+        // Envia cópia mapeada para a tabela do Analytics
+        await client.from('equipamentos').upsert({
+            patrimonio: novoItem.codigo,
+            classe: novoItem.categoria,
+            fabricante: novoItem.marca,
+            modelo: novoItem.modelo,
+            num_serie: novoItem.sn,
+            codigo_local: novoItem.local,
+            status: 'Em Almoxarifado'
+        }, { onConflict: 'patrimonio' });
+
+        // 3. Limpeza do Formulário
         document.getElementById('codigo').value = '';
         document.getElementById('marca').value = '';
         document.getElementById('modelo').value = '';
@@ -318,23 +359,25 @@ async function cadastrarNovoItem() {
         document.getElementById('quantidade').value = '1';
         document.getElementById('local').value = '';
         document.getElementById('observacoes').value = '';
-        document.getElementById('fotoInput').value = '';
-        if (document.getElementById('previewCadastro')) {
-            document.getElementById('previewCadastro').innerHTML = '';
-        }
+        
+        const fotoInput = document.getElementById('fotoInput');
+        if (fotoInput) fotoInput.value = '';
+        
+        const preview = document.getElementById('previewCadastro');
+        if (preview) preview.innerHTML = '';
+        
         fotoFileCadastro = null;
 
-        alert('Item cadastrado com sucesso!');
-        
-        await carregarDadosDoBanco();
-        mudarAba('busca');
+        alert('✅ Item cadastrado com sucesso!');
+
+        if (typeof carregarDadosDoBanco === 'function') await carregarDadosDoBanco();
+        if (typeof mudarAba === 'function') mudarAba('busca');
 
     } catch (error) {
-        console.error("Erro ao cadastrar item:", error.message);
-        alert("Erro ao salvar no banco de dados.");
+        console.error("Erro ao cadastrar item no Supabase:", error);
+        alert("Erro ao salvar no banco de dados: " + (error.message || error));
     }
 }
-
 // ==========================================
 // MODAL DE EDIÇÃO E SALVAMENTO CORRIGIDOS
 // ==========================================
