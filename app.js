@@ -5,7 +5,7 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let listaEquipamentos = [];
 
-// 1. CARREGAR EQUIPAMENTOS DO BANCO DE DADOS
+// 1. CARREGAR EQUIPAMENTOS DO SUPABASE
 async function carregarEstoque() {
     try {
         const { data: equipamentos, error } = await _supabase
@@ -24,13 +24,13 @@ async function carregarEstoque() {
     }
 }
 
-// 2. RENDERIZAR A TABELA NA TELA
+// 2. RENDERIZAR A TABELA MANTENDO O DESIGN ORIGINAL
 function renderizarTabela(dados) {
     const tbody = document.querySelector("#tabelaEstoque tbody") || document.querySelector("tbody");
     if (!tbody) return;
 
     if (!dados || dados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px;">Nenhum item encontrado no estoque.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px;">Nenhum item encontrado no estoque.</td></tr>`;
         return;
     }
 
@@ -38,16 +38,19 @@ function renderizarTabela(dados) {
     dados.forEach(item => {
         html += `
             <tr>
+                <td style="text-align:center;"><span style="font-size:1.2rem;">📷</span></td>
+                <td><span class="badge-cat">${item.classe || 'Geral'}</span></td>
                 <td><strong>${item.patrimonio || ''}</strong></td>
-                <td>${item.classe || ''}</td>
                 <td>${item.fabricante || ''}</td>
                 <td>${item.modelo || ''}</td>
                 <td>${item.num_serie || ''}</td>
-                <td><span class="badge" style="background:#e2e8f0; padding: 4px 8px; border-radius:4px;">📍 ${item.codigo_local || 'Sem Local'}</span></td>
-                <td>${item.status || 'Em Almoxarifado'}</td>
+                <td style="text-align:center;"><strong>1</strong></td>
+                <td><span class="badge-setor">📍 ${item.codigo_local || '1 Sala / 183'}</span></td>
                 <td>
-                    <button onclick="preencherFormularioEdicao('${item.patrimonio}')" style="background:#ffc107; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">✏️ Editar</button>
-                    <button onclick="excluirEquipamento('${item.patrimonio}')" style="background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
+                    <div style="display:flex; gap:4px; flex-direction:column;">
+                        <button onclick="preencherFormularioEdicao('${item.patrimonio}')" class="btn-editar" style="background:#ffc107; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">✏️ Editar</button>
+                        <button onclick="excluirEquipamento('${item.patrimonio}')" class="btn-excluir" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">🗑️ Excluir</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -56,7 +59,7 @@ function renderizarTabela(dados) {
     tbody.innerHTML = html;
 }
 
-// 3. SALVAR / EDITAR ITEM NO SUPABASE
+// 3. SALVAR / EDITAR NO SUPABASE
 async function salvarEquipamento(event) {
     if (event) event.preventDefault();
 
@@ -73,7 +76,7 @@ async function salvarEquipamento(event) {
         modelo: document.getElementById("modelo")?.value.trim() || '',
         num_serie: document.getElementById("num_serie")?.value.trim() || '',
         codigo_local: document.getElementById("codigo_local")?.value.trim() || '',
-        status: document.getElementById("status")?.value || 'Em Almoxarifado'
+        status: 'Em Almoxarifado'
     };
 
     const { error } = await _supabase
@@ -89,23 +92,7 @@ async function salvarEquipamento(event) {
     }
 }
 
-// 4. PREENCHER FORMULÁRIO PARA EDIÇÃO
-function preencherFormularioEdicao(patrimonio) {
-    const item = listaEquipamentos.find(i => i.patrimonio === patrimonio);
-    if (!item) return;
-
-    if (document.getElementById("patrimonio")) document.getElementById("patrimonio").value = item.patrimonio || '';
-    if (document.getElementById("classe")) document.getElementById("classe").value = item.classe || '';
-    if (document.getElementById("fabricante")) document.getElementById("fabricante").value = item.fabricante || '';
-    if (document.getElementById("modelo")) document.getElementById("modelo").value = item.modelo || '';
-    if (document.getElementById("num_serie")) document.getElementById("num_serie").value = item.num_serie || '';
-    if (document.getElementById("codigo_local")) document.getElementById("codigo_local").value = item.codigo_local || '';
-    if (document.getElementById("status")) document.getElementById("status").value = item.status || 'Em Almoxarifado';
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// 5. EXCLUIR ITEM DO SUPABASE
+// 4. EXCLUIR DO SUPABASE
 async function excluirEquipamento(patrimonio) {
     if (!confirm(`Deseja realmente excluir o item ${patrimonio}?`)) return;
 
@@ -117,7 +104,6 @@ async function excluirEquipamento(patrimonio) {
     if (error) {
         alert("Erro ao excluir: " + error.message);
     } else {
-        alert("Item excluído com sucesso!");
         carregarEstoque();
     }
 }
@@ -127,5 +113,4 @@ function limparFormulario() {
     if (form) form.reset();
 }
 
-// Inicia o carregamento quando a página abre
 document.addEventListener('DOMContentLoaded', carregarEstoque);
