@@ -126,14 +126,12 @@ async function inicializarEBuscarDados() {
 
         _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Busca tabela de locais
         const { data: locais, error: errLoc } = await _supabase.from('locais').select('*');
         if (errLoc) {
             exibirStatus("❌ Erro ao consultar tabela 'locais': " + errLoc.message, "erro");
             return;
         }
 
-        // Busca tabela de equipamentos
         const { data: equipamentos, error: errEq } = await _supabase.from('equipamentos').select('*');
         if (errEq) {
             exibirStatus("❌ Erro ao consultar tabela 'equipamentos': " + errEq.message, "erro");
@@ -146,7 +144,6 @@ async function inicializarEBuscarDados() {
             return;
         }
 
-        // Mapeamento de locais para junção
         let mapaLocais = {};
         (locais || []).forEach(loc => {
             let codLimpo = String(loc.codigo || '').replace(/^0+/, '').trim();
@@ -158,19 +155,11 @@ async function inicializarEBuscarDados() {
             }
         });
 
-       // Formatação dos dados (com equivalência para Estoque 183 / Almoxarifado Multimídia)
         dadosCruzadosCompletos = equipamentos.map(eq => {
-            let codRaw = String(eq.codigo_local || '').trim();
-            let codEqLimpo = codRaw.replace(/^0+/, '');
-
-            // Equivalência: Se for '183', '0183' ou '01.03.21.007', vincula ao Almoxarifado Multimídia
-            if (codRaw === '183' || codRaw === '0183' || codRaw === '01.03.21.007') {
-                codEqLimpo = '1.03.21.007'; // Chave correspondente na tabela de locais
-            }
-
+            let codEqLimpo = String(eq.codigo_local || '').replace(/^0+/, '').trim();
             let infoLoc = mapaLocais[codEqLimpo];
 
-            let nomeSetor = infoLoc ? infoLoc.nome : (codRaw === '183' ? 'Almoxarifado Multimídia' : 'Sem Nome Mapeado');
+            let nomeSetor = infoLoc ? infoLoc.nome : 'Sem Nome Mapeado';
             let nomeProjeto = infoLoc ? infoLoc.projeto : 'Sem Projeto';
 
             return {
@@ -314,7 +303,6 @@ function montarDashboard(dadosFiltrados) {
     document.getElementById('tbl').innerHTML = html;
 }
 
-// Inicia automaticamente assim que a página é carregada
 document.addEventListener('DOMContentLoaded', inicializarEBuscarDados);
 </script>
 
