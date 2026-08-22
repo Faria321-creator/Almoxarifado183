@@ -10,7 +10,7 @@
     <!-- Biblioteca para gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
-    <!-- IMPORTANTE: Biblioteca oficial do Supabase -->
+    <!-- Biblioteca oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Biblioteca para compressão de imagens -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
@@ -26,10 +26,9 @@
             </div>
             
             <ul class="nav-tabs">
-                <!-- Coloque este botão no seu index.html onde desejar o atalho -->
-<a href="analytics.html" class="btn" style="background:#17324d; color:white; padding:10px 15px; border-radius:5px; text-decoration:none; font-weight:bold; display:inline-block; margin-bottom:15px;">
-    📊 Ir para o Analytics
-</a>
+                <a href="analytics.html" class="btn" style="background:#17324d; color:white; padding:10px 15px; border-radius:5px; text-decoration:none; font-weight:bold; display:inline-block; margin-bottom:15px;">
+                    📊 Ir para o Analytics
+                </a>
                 <li class="nav-item active" onclick="mudarAba('busca')" id="tab-busca">🔍 Pesquisa Rápida</li>
                 <li class="nav-item" onclick="mudarAba('cadastro')" id="tab-cadastro">➕ Cadastrar Itens</li>
             </ul>
@@ -37,38 +36,38 @@
             <div class="divisor"></div>
 
             <h3>Filtrar Categoria</h3>
-         <ul id="listaCategorias">
-    <li class="cat-item active" onclick="filtrarPorCategoria('Todos')">Todos os Itens</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Consoles')">🎛️ Consoles</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Interface')">🎛️ Interface</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Amplificadores')">🔊 Amplificadores</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Processadores de áudio')">⚙️ Processadores</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Antenas RF')">📡 Antenas RF</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento AC')">⚡ AC</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Notebooks')">💻 Not</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento AC/Fz')">⚡ Ac/Fz</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('BodyPack')">📻 BodyPacks</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Plugon')">⚡ Plugon</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Fones EAR / Monitor')">🎧 Fones EAR / Monitor</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('HeardSet')">🎧 HeadSet</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Combo')">🔌 XLR+Ac (Combo)</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - P2')">🔌 P2</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - P10')">🔌 P10</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - XLR')">🔌 XLR</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Caixas de Som')">📢 Caixas de Som</li>
-     <li class="cat-item" onclick="filtrarPorCategoria('SubGrave')">📢 SubGrave</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Mic c/ Fio')">🎙️ Mic c/ Fio</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Mic s/ Fio')">🎙️ Mic s/ Fio</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Pentacústicas - Penta 10A')">🎛️ Penta 10A</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Pentacústicas - Penta 20A')">🎛️ Penta 20A</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Transmissão')">📡 Transmissão</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('TVs')">📺 TVs</li>
-    <li class="cat-item" onclick="filtrarPorCategoria('Outros')">📦 Outros</li>
-</ul>
-</ul>
+            <ul id="listaCategorias">
+                <li class="cat-item active" onclick="filtrarPorCategoria('Todos')">Todos os Itens</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Consoles')">🎛️ Consoles</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Interface')">🎛️ Interface</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Amplificadores')">🔊 Amplificadores</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Processadores de áudio')">⚙️ Processadores</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Antenas RF')">📡 Antenas RF</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento AC')">⚡ AC</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Notebooks')">💻 Not</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento AC/Fz')">⚡ Ac/Fz</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('BodyPack')">📻 BodyPacks</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Plugon')">⚡ Plugon</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Fones EAR / Monitor')">🎧 Fones EAR / Monitor</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('HeardSet')">🎧 HeadSet</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento Combo')">🔌 XLR+Ac (Combo)</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - P2')">🔌 P2</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - P10')">🔌 P10</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Cabeamento de Áudio - XLR')">🔌 XLR</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Caixas de Som')">📢 Caixas de Som</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('SubGrave')">📢 SubGrave</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Mic c/ Fio')">🎙️ Mic c/ Fio</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Mic s/ Fio')">🎙️ Mic s/ Fio</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Pentacústicas - Penta 10A')">🎛️ Penta 10A</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Pentacústicas - Penta 20A')">🎛️ Penta 20A</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Transmissão')">📡 Transmissão</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('TVs')">📺 TVs</li>
+                <li class="cat-item" onclick="filtrarPorCategoria('Outros')">📦 Outros</li>
+            </ul>
+
             <button id="btnSair" onclick="fazerLogout()" style="background: none; border: 1px solid #334155; color: #f87171; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-top: 15px;">
-    🚪 Sair do Sistema
-</button>
+                🚪 Sair do Sistema
+            </button>
         </aside>
 
         <!-- Área Principal -->
@@ -81,7 +80,7 @@
             <!-- ABA 1: PESQUISA -->
             <div id="aba-pesquisa-conteudo" class="tab-content active">
                 <section class="busca-secao">
-                    <input type="text" id="buscaRapida" placeholder="🔍 Digite para pesquisar (Marca, Modelo, Número de Série, Setor/Local ou Observação)..." oninput="executarBusca()">
+                    <input type="text" id="buscaRapida" placeholder="🔍 Digite para pesquisar (Patrimônio, Marca, Modelo, Nº Série ou Setor/Local)..." oninput="executarBusca()">
                 </section>
             </div>
 
@@ -92,47 +91,47 @@
                     <form id="formCadastro" onsubmit="event.preventDefault(); cadastrarNovoItem();">
                         <div class="grid-form">
                             <div class="form-group">
-        <label for="categoria">Categoria</label>
-        <select id="categoria" required>
-        <option value="" disabled selected hidden>Ex: Consoles, TVs, Mics...</option>
-        <option value="Consoles">Consoles</option>
-        <option value="Interface">Interface</option>
-        <option value="Amplificadores">Amplificadores</option>
-        <option value="Processadores de áudio">Processadores de áudio</option>
-        <option value="Antenas RF">Antenas RF</option>
-        <option value="Cabeamento AC">Cabeamento AC</option>
-        <option value="Notebooks">Notebooks</option>
-        <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
-        <option value="BodyPack">BodyPack</option>
-        <option value="Plugon">Plugon</option>
-        <option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
-        <option value="HeardSet">HeadSet</option>
-        <option value="Cabeamento Combo">Cabeamento Combo</option>
-        <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
-        <option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
-        <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
-        <option value="Caixas de Som">Caixas de Som</option>
-        <option value="SubGrave">SubGrave</option>
-        <option value="Mic c/ Fio">Mic c/ Fio</option>
-        <option value="Mic s/ Fio">Mic s/ Fio</option>
-        <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
-        <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
-        <option value="Transmissão">Transmissão</option>
-        <option value="TVs">TVs</option>
-        <option value="Outros">Outros</option>
-    </select>
-</div>
-                            <div class="form-group">
-                                <label for="codigo">Código</label>
-                                <input type="text" id="codigo" placeholder="Ex: TLV, MCF, ANT, CBV" required>
+                                <label for="categoria">Classe / Categoria</label>
+                                <select id="categoria" required>
+                                    <option value="" disabled selected hidden>Selecione a categoria...</option>
+                                    <option value="Consoles">Consoles</option>
+                                    <option value="Interface">Interface</option>
+                                    <option value="Amplificadores">Amplificadores</option>
+                                    <option value="Processadores de áudio">Processadores de áudio</option>
+                                    <option value="Antenas RF">Antenas RF</option>
+                                    <option value="Cabeamento AC">Cabeamento AC</option>
+                                    <option value="Notebooks">Notebooks</option>
+                                    <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
+                                    <option value="BodyPack">BodyPack</option>
+                                    <option value="Plugon">Plugon</option>
+                                    <option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
+                                    <option value="HeardSet">HeadSet</option>
+                                    <option value="Cabeamento Combo">Cabeamento Combo</option>
+                                    <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
+                                    <option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
+                                    <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
+                                    <option value="Caixas de Som">Caixas de Som</option>
+                                    <option value="SubGrave">SubGrave</option>
+                                    <option value="Mic c/ Fio">Mic c/ Fio</option>
+                                    <option value="Mic s/ Fio">Mic s/ Fio</option>
+                                    <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
+                                    <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
+                                    <option value="Transmissão">Transmissão</option>
+                                    <option value="TVs">TVs</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="marca">Marca</label>
-                                <input type="text" id="marca" placeholder="Ex: Shure, Samsung" required>
+                                <label for="codigo">Nº Patrimônio</label>
+                                <input type="text" id="codigo" placeholder="Ex: 11833 ou 000123" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="marca">Fabricante / Marca</label>
+                                <input type="text" id="marca" placeholder="Ex: Shure, JBL, Yamaha" required>
                             </div>
                             <div class="form-group">
                                 <label for="modelo">Modelo</label>
-                                <input type="text" id="modelo" placeholder="Ex: SM58, UN32" required>
+                                <input type="text" id="modelo" placeholder="Ex: SM58, CL5, EON615" required>
                             </div>
                             <div class="form-group">
                                 <label for="sn">Número de Série (SN)</label>
@@ -143,8 +142,8 @@
                                 <input type="number" id="quantidade" min="1" value="1" required>
                             </div>
                             <div class="form-group">
-                                <label for="local">Setor / Localização</label>
-                                <input type="text" id="local" placeholder="Ex: Armário B2, Prateleira 4" required>
+                                <label for="local">Cód. Local de Entrada</label>
+                                <input type="text" id="local" value="183" placeholder="Ex: 183" required>
                             </div>
                             <!-- CAMPO DE FOTO NO CADASTRO -->
                             <div class="form-group">
@@ -154,7 +153,7 @@
                             </div>
                             <div class="form-group gp-largo">
                                 <label for="observacoes">Observações / Detalhes</label>
-                                <input type="text" id="observacoes" placeholder="Ex: Novo, Com detalhe, Voltagem...">
+                                <input type="text" id="observacoes" placeholder="Ex: Entrada Nota Fiscal 11833, Dual Channel...">
                             </div>
                         </div>
                         <div class="botoes-form">
@@ -177,13 +176,13 @@
                     <thead>
                         <tr>
                             <th>Foto</th>
-                            <th>Categoria</th>
-                            <th>Código</th>
-                            <th>Marca</th>
+                            <th>Classe</th>
+                            <th>Patrimônio</th>
+                            <th>Fabricante</th>
                             <th>Modelo</th>
                             <th>Nº Série (SN)</th>
                             <th>Qtd</th>
-                            <th>Setor / Local</th>
+                            <th>Cód. Local</th>
                             <th>Observações</th>
                             <th class="txt-centro">Ações</th>
                         </tr>
@@ -202,46 +201,47 @@
     <!-- JANELA MODAL PARA EDIÇÃO RÁPIDA -->
     <div id="modalEditar" class="modal-container">
         <div class="modal-conteudo">
-            <h3>✏️ Editar Informações do Item</h3>
+            <h3>✏️ Editar / Transferir Equipamento</h3>
             <form id="formEditar" onsubmit="event.preventDefault(); salvarEdicaoItem();">
                 <input type="hidden" id="edit-id">
                 <div class="grid-form">
                     <div class="form-group">
-                      <select id="edit-categoria" required>
-        <option value="" disabled selected hidden>Ex: Consoles, TVs, Mics...</option>
-        <option value="Consoles">Consoles</option>
-        <option value="Interface">Interface</option>
-        <option value="Amplificadores">Amplificadores</option>
-        <option value="Processadores de áudio">Processadores de áudio</option>
-        <option value="Antenas RF">Antenas RF</option>
-        <option value="Cabeamento AC">Cabeamento AC</option>
-        <option value="Notebooks">Notebooks</option>
-        <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
-        <option value="BodyPack">BodyPack</option>
-        <option value="Plugon">Plugon</option>
-        <option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
-        <option value="HeardSet">HeadSet</option>
-        <option value="Cabeamento Combo">Cabeamento Combo</option>
-        <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
-        <option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
-        <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
-        <option value="Caixas de Som">Caixas de Som</option>
-        <option value="SubGrave">SubGrave</option>
-        <option value="Mic c/ Fio">Mic c/ Fio</option>
-        <option value="Mic s/ Fio">Mic s/ Fio</option>
-        <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
-        <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
-        <option value="Transmissão">Transmissão</option>
-        <option value="TVs">TVs</option>
-        <option value="Outros">Outros</option>
-    </select>
-</div>
+                        <label for="edit-categoria">Classe / Categoria</label>
+                        <select id="edit-categoria" required>
+                            <option value="" disabled selected hidden>Selecione a categoria...</option>
+                            <option value="Consoles">Consoles</option>
+                            <option value="Interface">Interface</option>
+                            <option value="Amplificadores">Amplificadores</option>
+                            <option value="Processadores de áudio">Processadores de áudio</option>
+                            <option value="Antenas RF">Antenas RF</option>
+                            <option value="Cabeamento AC">Cabeamento AC</option>
+                            <option value="Notebooks">Notebooks</option>
+                            <option value="Cabeamento AC/Fz">Cabeamento AC/Fz</option>
+                            <option value="BodyPack">BodyPack</option>
+                            <option value="Plugon">Plugon</option>
+                            <option value="Fones EAR / Monitor">Fones EAR / Monitor</option>
+                            <option value="HeardSet">HeadSet</option>
+                            <option value="Cabeamento Combo">Cabeamento Combo</option>
+                            <option value="Cabeamento de Áudio - P2">Cabeamento de Áudio - P2</option>
+                            <option value="Cabeamento de Áudio - P10">Cabeamento de Áudio - P10</option>
+                            <option value="Cabeamento de Áudio - XLR">Cabeamento de Áudio - XLR</option>
+                            <option value="Caixas de Som">Caixas de Som</option>
+                            <option value="SubGrave">SubGrave</option>
+                            <option value="Mic c/ Fio">Mic c/ Fio</option>
+                            <option value="Mic s/ Fio">Mic s/ Fio</option>
+                            <option value="Pentacústicas - Penta 10A">Pentacústicas - Penta 10A</option>
+                            <option value="Pentacústicas - Penta 20A">Pentacústicas - Penta 20A</option>
+                            <option value="Transmissão">Transmissão</option>
+                            <option value="TVs">TVs</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
                     <div class="form-group">
-                        <label for="edit-codigo">Código</label>
+                        <label for="edit-codigo">Nº Patrimônio</label>
                         <input type="text" id="edit-codigo" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-marca">Marca</label>
+                        <label for="edit-marca">Fabricante / Marca</label>
                         <input type="text" id="edit-marca" required>
                     </div>
                     <div class="form-group">
@@ -257,8 +257,8 @@
                         <input type="number" id="edit-quantidade" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-local">Setor / Localização</label>
-                        <input type="text" id="edit-local" required>
+                        <label for="edit-local">Cód. Local Destino</label>
+                        <input type="text" id="edit-local" placeholder="Ex: 10102002 para transferir" required>
                     </div>
                     <!-- CAMPO DE FOTO NA EDIÇÃO -->
                     <div class="form-group">
@@ -267,13 +267,13 @@
                         <div id="edit-preview" class="preview-foto-container"></div>
                     </div>
                     <div class="form-group gp-largo">
-                        <label for="edit-observacoes">Observações</label>
+                        <label for="edit-observacoes">Observações / Detalhes</label>
                         <input type="text" id="edit-observacoes">
                     </div>
                 </div>
                 <div class="modal-botoes">
                     <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
-                    <button type="submit" class="btn-salvar">Atualizar Dados</button>
+                    <button type="submit" class="btn-salvar">Atualizar Dados / Transferir</button>
                 </div>
             </form>
         </div>
@@ -287,7 +287,6 @@
         </div>
     </div>
 
-    <!-- IMPORTANTE: Seu script carregado antes de fechar o body -->
     <script src="app.js"></script>
 </body>
 </html>
