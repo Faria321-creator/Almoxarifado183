@@ -158,12 +158,19 @@ async function inicializarEBuscarDados() {
             }
         });
 
-        // Formatação dos dados
+       // Formatação dos dados (com equivalência para Estoque 183 / Almoxarifado Multimídia)
         dadosCruzadosCompletos = equipamentos.map(eq => {
-            let codEqLimpo = String(eq.codigo_local || '').replace(/^0+/, '').trim();
+            let codRaw = String(eq.codigo_local || '').trim();
+            let codEqLimpo = codRaw.replace(/^0+/, '');
+
+            // Equivalência: Se for '183', '0183' ou '01.03.21.007', vincula ao Almoxarifado Multimídia
+            if (codRaw === '183' || codRaw === '0183' || codRaw === '01.03.21.007') {
+                codEqLimpo = '1.03.21.007'; // Chave correspondente na tabela de locais
+            }
+
             let infoLoc = mapaLocais[codEqLimpo];
 
-            let nomeSetor = infoLoc ? infoLoc.nome : 'Sem Nome Mapeado';
+            let nomeSetor = infoLoc ? infoLoc.nome : (codRaw === '183' ? 'Almoxarifado Multimídia' : 'Sem Nome Mapeado');
             let nomeProjeto = infoLoc ? infoLoc.projeto : 'Sem Projeto';
 
             return {
